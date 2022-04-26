@@ -1,0 +1,12 @@
+This model is just for detect gluclose level, basic task is to detect glucose level ,then 
+save this glucose level to the database ,and then compare their vlaue,if glucose level is normal we do nothing cause we have
+saved the glucose level to the database,but  if glucose level if too high
+or too low, we send the alarm message with glucose level to the pool of patient to notice patient that the dangerous
+glucoselevel, then patient will calibrate this alarm by using GM。
+
+I just seperate this part task1 (actually CGM have two task:1:detect glucose level and 2:retrieve glucose level
+)  from the "finalmodel", for simplicity and more clearly to demonstrare when presentation or making vedio, but in the report we need to include this part.
+
+
+The code for this part is complete（but you may cont see the token move,but it whole process can work you could have a look about history） ,
+ you could check that and write it to the report.

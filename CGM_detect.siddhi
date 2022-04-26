@@ -1,0 +1,41 @@
+@App:name("CGM_detect")
+
+
+@App:description("Description of the plan")
+
+@source(type='http', receiver.url='http://localhost:8800/detectCgmStream', @map(type='json')) 
+@sink(type='log') 
+define stream CGMStream(instanceID string);
+
+
+@source(type='http', receiver.url='http://localhost:8800/cgmStreamPy', @map(type='json')) 
+@sink(type='log') 
+define stream CGMStreampy(value double);
+
+
+@sink(type='http',
+        publisher.url='http://127.0.0.1:8080/engine-rest/message',
+        headers = "Host:127.0.0.1:8080",
+        @map(type='json', @payload(
+        """
+        {
+        "messageName":"{{messageName}}",
+        "processInstanceId":"{{processInstanceID}}",
+        "processVariables":
+        {
+        "var":{
+        "value":"{{val}}",
+        "type":"Double"
+        }
+        }
+        }
+        """))) 
+define stream ValStream(processInstanceID string, messageName string, val double);
+
+
+
+from  CGMStream#window.timeBatch(300 sec ) as P join CGMStreampy#window.timeBatch(300 sec ) as S
+select P.instanceID as processInstanceID, 'glucoselevel' as messageName, avg(S.value) as val
+insert into ValStream;
+
+
